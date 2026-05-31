@@ -1,1 +1,44 @@
-hello world
+
+
+int x;
+float y;
+string j;
+bool l;
+
+
+// comentarios.
+/*  
+Comentarios multi linea
+*/
+
+int x = 32; // declarar variable y asignarle valor.
+int v = x + 2 // utilizar variables dentro de expresiones.
+// declaracion Opcional.
+
+//Expresiones.
+int x = 32 + 4 - 2; // suma resta.
+
+int x = 32 * 4 / 3; // multiplicacion y division.
+
+bool i = (x == u);  // comparacion.
+
+// y comparador logico && , ||;
+
+println x; // debe haber impresion en consola
+ 
+//debe tener If - else.
+
+if (nota >= 6) {
+print("Aprobado");
+} else {
+print("Desaprobado");
+}
+
+//Debe contener un while.
+while (i < 5) {
+print(i);
+i = i + 1;
+}
+
+ 
+ 
