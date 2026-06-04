@@ -1,0 +1,57 @@
+int a = 4;
+float b = 3.14;
+string mensaje = "";
+
+print "-- ejemplos de operaciones aritmeticas nwn --";
+float suma = a + b;
+mensaje = "resultado: " + a + " + " + b + " = " + suma; 
+print mensaje;
+
+float resta = a - b;
+mensaje = "resultado: " + a + " - " + b + " = " + resta; 
+print mensaje;
+
+float multiplicacion = a * b;
+mensaje = "resultado: " + a + " * " + b + " = " + multiplicacion; 
+print mensaje;
+
+float division = a / b;
+mensaje = "resultado: " + a + " / " + b + " = " + division;
+print mensaje;
+print "---------------------------------------------";
+
+print "-- ejemplos de operaciones de comparacion ouo --";
+bool igual = a == b;
+mensaje = "resultado: " + a + " == " + b + " = " + igual;
+print mensaje;
+
+bool distinto = a != b;
+mensaje = "resultado: " + a + " != " + b + " = " + distinto;
+print mensaje;
+
+bool mayor = a > b;
+mensaje = "resultado: " + a + " > " + b + " = " + mayor;
+print mensaje;
+
+bool menor = a < b;
+mensaje = "resultado: " + a + " < " + b + " = " + menor;
+print mensaje;
+
+bool mayor_igual = a >= b;
+mensaje = "resultado: " + a + " >= " + b + " = " + mayor_igual;
+print mensaje;
+
+bool menor_igual = a <= b;
+mensaje = "resultado: " + a + " <= " + b + " = " + menor_igual;
+print mensaje;
+print "---------------------------------------------";
+
+print "-- ejemplos de operaciones logicas n3n --";
+bool operacion_and = igual && distinto;
+mensaje = "resultado: " + igual + " && " + distinto + " = " + operacion_and;
+print mensaje;
+
+bool operacion_or = igual || distinto;
+mensaje = "resultado: " + igual + " || " + distinto + " = " + operacion_or;
+print mensaje;
+print "---------------------------------------------";
