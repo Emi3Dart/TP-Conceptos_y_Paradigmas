@@ -11,7 +11,7 @@ public class Main {
     private static final String DIRBASE = "src/test/resources/";
 
     public static void main(String[] args) throws IOException {
-        String files[] = args.length==0? new String[]{ "test." + EXTENSION } : args;
+        String files[] = args.length==0? new String[]{ "example." + EXTENSION } : args;
         System.out.println("Dirbase: " + DIRBASE);
         for (String file : files){
             System.out.println("START: " + file);
@@ -20,7 +20,7 @@ public class Main {
             LanguageLexer lexer = new LanguageLexer(in);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             LanguageParser parser = new LanguageParser(tokens);
-            LanguageParser.StartContext tree = parser.start();
+            LanguageParser.MainContext tree = parser.main();
             LanguageCustomVisitor visitor = new LanguageCustomVisitor();
             visitor.visit(tree);
 
