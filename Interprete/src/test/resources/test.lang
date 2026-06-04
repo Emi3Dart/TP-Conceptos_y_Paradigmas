@@ -24,7 +24,7 @@ bool i = (x == u);  // comparacion.
 
 // y comparador logico && , ||;
 
-println x; // debe haber impresion en consola
+print x; // debe haber impresion en consola
  
 //debe tener If - else.
 
