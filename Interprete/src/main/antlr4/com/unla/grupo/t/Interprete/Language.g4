@@ -191,3 +191,6 @@ STRING_VALUE: '"'~["]*'"';
 BOOL_VALUE: 'false'|'true';
 
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
+
+LINE_COMMENT: '//' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip;

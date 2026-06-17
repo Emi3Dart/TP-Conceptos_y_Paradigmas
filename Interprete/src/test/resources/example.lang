@@ -2,6 +2,12 @@ int a = 4;
 float b = 3.14;
 string mensaje = "";
 
+// test de comentario
+print "TEST DE COMENTARIO BIEN"
+/*
+	ACA NO DEBERIA PASAR NADA
+*/
+
 print "-- ejemplos de operaciones aritmeticas nwn --";
 float suma = a + b;
 mensaje = "resultado: " + a + " + " + b + " = " + suma; 
