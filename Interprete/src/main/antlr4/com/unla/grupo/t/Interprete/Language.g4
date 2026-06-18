@@ -18,7 +18,7 @@ main
 	sentence*
 ;
 
-sentence:
+sentence returns [ASTNode node]:
 	variable_declaration
 	|
 	variable_da
@@ -26,6 +26,8 @@ sentence:
 	variable_assignation
 	|
 	print
+	|
+	conditional
 ;
 
 variable_declaration
@@ -80,16 +82,34 @@ variable_assignation
 		symbolTable.assign($ID.text, $expression.value);
 	}
 ;
-print
-:
+print returns [ASTNode node]:
 	PRINT expression SEMICOLON
-	{System.out.println($expression.value);}
+	{$node = new Print($expression.node)}
 ;
-expression returns [Value value]
+
+conditional returns [ASTNode node] 
 :
-	t1=factor {$value = $t1.value;}
+	
+	IF PARENTHESIS_OPEN expression PARENTHESIS_CLOSE
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN ( s1 = sentence {body.add($s1.node);})* BRACKET_CLOSE
+	ELSE 
+	{
+		List<ASTNode> elseBody = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN ( s2 = sentence {elseBody.add($s2.node);})* BRACKET_CLOSE
+	{
+		$node = new If($expression.node,body, elsebody)
+	}
+;
+
+expression returns [ASTNode node]
+:
+	t1=factor {$node = $t1.node;}
 	(
-		PLUS t2=factor {$value = $value.plus($t2.value);}
+		PLUS t2=factor {$node = new Addition($node, $t2.node);}
 		|
 		MINUS t2=factor {$value = $value.minus($t2.value);}
 		|
@@ -110,27 +130,27 @@ expression returns [Value value]
 		NEQ t2=factor {$value = $value.neq($t2.value);}
 	)*
 ;
-factor returns [Value value]
+factor returns [ASTNode node]
 :
-	t1=term {$value = $t1.value;}
+	t1=term {$node = $t1.node;}
 	(
 		DIVISION t2=term {$value = $value.division($t2.value);}
 		|
-		MULTIPLICATION t2=term {$value = $value.multiplication($t2.value);}
+		MULTIPLICATION t2=term {$node = new Multiplication($node, $t2.node);}
 	)*
 ;
-term returns [Value value]
+term returns [ASTNode node]
 :
 	ID {$value = symbolTable.get($ID.text);}
 	|
 	NUMBER {
-		$value = new IntValue(
+		$node = new Constant(
 			Integer.parseInt($NUMBER.text)
 		);
 	}
 	|
 	FLOAT_NUMBER {
-		$value = new FloatValue(
+		$node = new Constant(
 			Float.parseFloat($FLOAT_NUMBER.text)
 		);
 	}
@@ -142,12 +162,12 @@ term returns [Value value]
 	}
 	|
 	BOOL_VALUE {
-		$value = new BoolValue(
+		$node = new Constant(
 			Boolean.parseBoolean($BOOL_VALUE.text)
 		);
 	}
 	|
-	PARENTHESIS_OPEN expression PARENTHESIS_CLOSE {$value = $expression.value;}
+	PARENTHESIS_OPEN expression {$node = $expression.value;} PARENTHESIS_CLOSE 
 ;
 
 VAR: INT | FLOAT | STRING | BOOL;
@@ -155,6 +175,9 @@ INT: 'int';
 FLOAT: 'float';
 STRING: 'string';
 BOOL: 'bool';
+IF: 'if';
+ELSE: 'else';
+
 
 PRINT: 'print';
 
@@ -179,6 +202,8 @@ NEQ: '!=';
 
 PARENTHESIS_OPEN: '(';
 PARENTHESIS_CLOSE: ')';
+BRACKET_OPEN: '{';
+BRACKET_CLOSE: '}';
 
 WS
 :
