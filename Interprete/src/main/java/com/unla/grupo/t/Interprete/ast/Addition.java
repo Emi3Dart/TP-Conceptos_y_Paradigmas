@@ -21,10 +21,10 @@ public class Addition implements ASTNode {
 		
 		if(v1 instanceof Integer && v2 instanceof Integer) {
 			return (Integer) v1 + (Integer) v2;
-		}if(v1 instanceof Float || v2 instanceof Float) {
-			return ((Number) v1).floatValue() + ((Number) v2).floatValue();
 		}if(v1 instanceof String || v2 instanceof String) {
 			return v1.toString() + v2.toString();
+		}if(v1 instanceof Float || v2 instanceof Float) {
+			return ((Number) v1).floatValue() + ((Number) v2).floatValue();
 		}
 		throw new RuntimeException("Incompatible types for +");
 	}
