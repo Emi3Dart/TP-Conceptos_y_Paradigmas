@@ -3,7 +3,7 @@ float b = 3.14;
 string mensaje = "";
 
 // test de comentario
-print "TEST DE COMENTARIO BIEN"
+print "TEST DE COMENTARIO BIEN";
 /*
 	ACA NO DEBERIA PASAR NADA
 */
@@ -61,3 +61,33 @@ bool operacion_or = igual || distinto;
 mensaje = "resultado: " + igual + " || " + distinto + " = " + operacion_or;
 print mensaje;
 print "---------------------------------------------";
+
+print "---------------------------------------------";
+print "------- Ejemplos de If-Else -------";
+int nota = 4;
+if (nota >= 6){
+	print "Aprobado";
+} else {
+	print "Desaprobado";
+}
+
+bool es_verdadero = true;
+if (es_verdadero && true) {
+	print "Entro al if con operador logico";
+} else {
+	print "No deberia entrar aca";
+}
+
+print "---------------------------------------------";
+print "------- Ejemplo de While -------";
+
+int i = 0;
+while (i < 5) {
+	print "hola " + i;
+	i = i + 1;
+}
+
+
+
+
+

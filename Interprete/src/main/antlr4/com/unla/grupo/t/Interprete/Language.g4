@@ -1,12 +1,12 @@
 grammar Language;
 
 @parser::header {
-	import com.unla.grupo.t.Interprete.SymbolTable;
-	import com.unla.grupo.t.Interprete.types.Value;
-	import com.unla.grupo.t.Interprete.types.IntValue;
-	import com.unla.grupo.t.Interprete.types.FloatValue;
-	import com.unla.grupo.t.Interprete.types.StringValue;
-	import com.unla.grupo.t.Interprete.types.BoolValue;
+	
+	import java.util.List;
+	import java.util.ArrayList;
+	import java.util.Map;
+	import java.util.HashMap;
+	import com.unla.grupo.t.Interprete.ast.*;
 }
 
 @parser::members {
@@ -15,139 +15,152 @@ grammar Language;
 
 main
 :
-	sentence*
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+		Map<String, Object> symbolTable = new HashMap<String, Object>();
+	}
+	(sentence {body.add($sentence.node);})*
+	{
+		for(ASTNode n : body){
+			n.execute(symbolTable);
+		}
+	}
 ;
 
-sentence:
-	variable_declaration
+sentence returns [ASTNode node]:
+	variable_declaration {$node = $variable_declaration.node;}
 	|
-	variable_da
+	variable_da {$node = $variable_da.node;}
 	|
-	variable_assignation
+	variable_assignation {$node = $variable_assignation.node;}
 	|
-	print
+	print {$node = $print.node;}
+	|
+	conditional {$node = $conditional.node;}
+	|
+	while_statement {$node = $while_statement.node;}
 ;
 
-variable_declaration
+variable_declaration returns [ASTNode node]
 :
 	VAR ID SEMICOLON
 	{
-		if ($VAR.text.equals("int")) {
-			symbolTable.declare($ID.text, new IntValue(0));
-		}
-		if ($VAR.text.equals("float")) {
-			symbolTable.declare($ID.text, new FloatValue(0f));
-		}
-		if ($VAR.text.equals("string")) {
-			symbolTable.declare($ID.text, new StringValue(""));
-		}
-		if ($VAR.text.equals("bool")) {
-			symbolTable.declare($ID.text, new BoolValue(false));
-		}
+		$node = new VariableDeclaration($ID.text, $VAR.text);
 	}
 ;
-variable_da
+variable_da returns [ASTNode node]
 :
 	VAR ID ASSIGN expression SEMICOLON
 	{
-		//validaciones:3
-		if ($VAR.text.equals("int")) {
-			if (!($expression.value instanceof IntValue)) {
-				throw new RuntimeException("Expected int value");
-			}
-		} else if ($VAR.text.equals("float")) {
-			if (!($expression.value instanceof FloatValue)) {
-				throw new RuntimeException("Expected float value");
-			}
-		} else if ($VAR.text.equals("string")) {
-			if (!($expression.value instanceof StringValue)) {
-				throw new RuntimeException("Expected string value");
-			}
-		} else if ($VAR.text.equals("bool")) {
-			if (!($expression.value instanceof BoolValue)) {
-				throw new RuntimeException("Expected bool value");
-			}
-		} else {
-			throw new RuntimeException("Unknown data type. Expected int, float, string or bool");
-		}
-		symbolTable.declare($ID.text, $expression.value);
+		$node = new VariableDA($ID.text, $VAR.text, $expression.node);
 	}
 ;
-variable_assignation
+variable_assignation returns [ASTNode node]
 :
 	ID ASSIGN expression SEMICOLON
 	{
-		symbolTable.assign($ID.text, $expression.value);
+		$node = new VariableAssignation($ID.text, $expression.node);
 	}
 ;
-print
+print returns [ASTNode node]
 :
 	PRINT expression SEMICOLON
-	{System.out.println($expression.value);}
+	{$node = new Print($expression.node);}
 ;
-expression returns [Value value]
+
+conditional returns [ASTNode node] 
 :
-	t1=factor {$value = $t1.value;}
+	
+	IF PARENTHESIS_OPEN expression PARENTHESIS_CLOSE
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN ( s1 = sentence {body.add($s1.node);})* BRACKET_CLOSE
+	ELSE 
+	{
+		List<ASTNode> elseBody = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN ( s2 = sentence {elseBody.add($s2.node);})* BRACKET_CLOSE
+	{
+		$node = new If($expression.node,body, elseBody);
+	}
+;
+
+while_statement returns [ASTNode node] 
+:
+	
+	WHILE PARENTHESIS_OPEN expression PARENTHESIS_CLOSE
+	{
+		List<ASTNode> body = new ArrayList<ASTNode>();
+	}
+	BRACKET_OPEN ( s = sentence {body.add($s.node);})* BRACKET_CLOSE
+	{
+		$node = new While($expression.node,body);
+	}
+;
+
+expression returns [ASTNode node]
+:
+	t1=factor {$node = $t1.node;}
 	(
-		PLUS t2=factor {$value = $value.plus($t2.value);}
+		PLUS t2=factor {$node = new Addition($node, $t2.node);}
 		|
-		MINUS t2=factor {$value = $value.minus($t2.value);}
+		MINUS t2=factor {$node = new Subtraction($node, $t2.node);}
 		|
-		AND t2=factor {$value = $value.and($t2.value);}
+		AND t2=factor {$node = new And($node, $t2.node);}
 		|
-		OR t2=factor {$value = $value.or($t2.value);}
+		OR t2=factor {$node = new Or($node, $t2.node);}
 		|
-		GT t2=factor {$value = $value.gt($t2.value);}
+		GT t2=factor {$node = new Gt($node, $t2.node);}
 		|
-		LT t2=factor {$value = $value.lt($t2.value);}
+		LT t2=factor {$node = new Lt($node, $t2.node);}
 		|
-		GEQ t2=factor {$value = $value.geq($t2.value);}
+		GEQ t2=factor {$node = new Geq($node, $t2.node);}
 		|
-		LEQ t2=factor {$value = $value.leq($t2.value);}
+		LEQ t2=factor {$node = new Leq($node, $t2.node);}
 		|
-		EQ t2=factor {$value = $value.eq($t2.value);}
+		EQ t2=factor {$node = new Eq($node, $t2.node);}
 		|
-		NEQ t2=factor {$value = $value.neq($t2.value);}
+		NEQ t2=factor {$node = new Neq($node, $t2.node);}
 	)*
 ;
-factor returns [Value value]
+factor returns [ASTNode node]
 :
-	t1=term {$value = $t1.value;}
+	t1=term {$node = $t1.node;}
 	(
-		DIVISION t2=term {$value = $value.division($t2.value);}
+		DIVISION t2=term {$node = new Division($node, $t2.node);}
 		|
-		MULTIPLICATION t2=term {$value = $value.multiplication($t2.value);}
+		MULTIPLICATION t2=term {$node = new Multiplication($node, $t2.node);}
 	)*
 ;
-term returns [Value value]
+term returns [ASTNode node]
 :
-	ID {$value = symbolTable.get($ID.text);}
+	ID {$node = new VariableReference($ID.text);}
 	|
 	NUMBER {
-		$value = new IntValue(
+		$node = new Constant(
 			Integer.parseInt($NUMBER.text)
 		);
 	}
 	|
 	FLOAT_NUMBER {
-		$value = new FloatValue(
+		$node = new Constant(
 			Float.parseFloat($FLOAT_NUMBER.text)
 		);
 	}
 	|
 	STRING_VALUE {
-		$value = new StringValue(
-			$STRING_VALUE.text
-		);
+		String raw = $STRING_VALUE.text;
+		$node = new Constant(raw.substring(1, raw.length() - 1));
 	}
 	|
 	BOOL_VALUE {
-		$value = new BoolValue(
+		$node = new Constant(
 			Boolean.parseBoolean($BOOL_VALUE.text)
 		);
 	}
 	|
-	PARENTHESIS_OPEN expression PARENTHESIS_CLOSE {$value = $expression.value;}
+	PARENTHESIS_OPEN expression {$node = $expression.node;} PARENTHESIS_CLOSE 
 ;
 
 VAR: INT | FLOAT | STRING | BOOL;
@@ -155,6 +168,10 @@ INT: 'int';
 FLOAT: 'float';
 STRING: 'string';
 BOOL: 'bool';
+IF: 'if';
+ELSE: 'else';
+WHILE: 'while';
+
 
 PRINT: 'print';
 
@@ -179,6 +196,8 @@ NEQ: '!=';
 
 PARENTHESIS_OPEN: '(';
 PARENTHESIS_CLOSE: ')';
+BRACKET_OPEN: '{';
+BRACKET_CLOSE: '}';
 
 WS
 :
