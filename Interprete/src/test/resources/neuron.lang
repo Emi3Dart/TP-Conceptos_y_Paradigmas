@@ -1,0 +1,70 @@
+/*
+este ejemplo utiliza nuestro lenguaje interpretado con el objetivo de
+entrenar una neurona para que dicha pueda aprender a multiplicar numeros por 2 o-o
+*/
+
+print("-- entrenamiento de una neurona c: --");
+
+float x1 = 0.0;
+float x2 = 1.0;
+float x3 = 2.0;
+float x4 = 3.0;
+
+float expected_y1 = 0.0;
+float expected_y2 = 2.0;
+float expected_y3 = 4.0;
+float expected_y4 = 6.0;
+
+float w = 3.2;
+float b = 0.3;
+
+int step = 0;
+int steps = 1000;
+
+float y;
+float cost;
+float learning_rate = 0.01;
+float dL_dz;
+float dz_dy = 1.0;
+float dy_dw;
+float dy_db = 1.0;
+
+print("entrenando neurona...");
+while (step < steps) {
+	y = w*x1 + b;
+	cost = (y - expected_y1) * (y - expected_y1);
+	dL_dz = 2 * (y - expected_y1);
+	dy_dw = x1;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x2 + b;
+	cost = (y - expected_y2) * (y - expected_y2);
+	dL_dz = 2 * (y - expected_y2);
+	dy_dw = x2;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x3 + b;
+	cost = (y - expected_y3) * (y - expected_y3);
+	dL_dz = 2 * (y - expected_y3);
+	dy_dw = x3;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x4 + b;
+	cost = (y - expected_y4) * (y - expected_y4);
+	dL_dz = 2 * (y - expected_y4);
+	dy_dw = x4;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	step = step + 1;
+}
+print("entrenamiento finalizado!!!");
+print("predicciones de la neurona para la tabla del 2:");
+int i = 0;
+while (i <= 10) {
+	print(i + " * 2 = " + (w*i + b));
+	i = i + 1;
+}

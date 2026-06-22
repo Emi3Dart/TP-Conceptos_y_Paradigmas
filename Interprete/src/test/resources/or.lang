@@ -1,0 +1,14 @@
+/*
+este ejemplo imprime la tabla de verdad OR c:
+*/
+
+print("-- tabla de verdad OR (o-o) --");
+bool false_and_false = false || false;
+bool false_and_true = false || true;
+bool true_and_false = true || false;
+bool true_and_true = true || true;
+
+print("false || false = " + false_and_false);
+print("false || true = " + false_and_true);
+print("true || false = " + true_and_false);
+print("true || true = " + true_and_true);

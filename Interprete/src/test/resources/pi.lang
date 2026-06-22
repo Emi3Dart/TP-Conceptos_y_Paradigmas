@@ -1,0 +1,19 @@
+/*
+este ejemplo usa nuestro lenguaje para aproximar el valor de PI
+usando la serie de leibniz o_____o
+*/
+
+print("--- ejemplo de aproximacion de pi nwn ---");
+
+float pi = 0.0;
+int i = 0;
+int signo = 1;
+
+print("aproximando pi usando la serie de leibniz...");
+while (i < 100000) {
+    pi = pi + signo * (4.0 / (2 * i + 1));
+    signo = signo * (1 - 2);
+    i = i + 1;
+}
+
+print("pi aproximado: " + pi);
