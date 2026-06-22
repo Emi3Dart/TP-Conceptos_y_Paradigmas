@@ -157,6 +157,10 @@ Interprete/
     │           └── Value.java
     └── test/resources/
         ├── example.lang             # Programa de ejemplo
+        ├── fibonacci.lang           # Programa de ejemplo
+        ├── neuron.lang              # Programa de ejemplo
+        ├── or.lang                  # Programa de ejemplo
+        ├── pi.lang                  # Programa de ejemplo
         └── test.lang                # Especificación de requerimientos
 ```
 
@@ -195,9 +199,130 @@ Ejecutar `Main.java` como Java Application. Pasar el nombre del archivo como arg
 
 ---
 
-## Ejemplo completo
+## Ejemplos
 
-Ver `src/test/resources/example.lang` para un programa de ejemplo que demuestra todas las funcionalidades del lenguaje.
+El directorio `src/test/resources/` contiene varios programas escritos en el lenguaje que sirven como referencia y muestran sus distintas características.
+
+- **`example.lang`**: programa principal que reúne y demuestra todas las funcionalidades del lenguaje.
+- **`fibonacci.lang`**: calcula los primeros `n` números de la sucesión de Fibonacci utilizando variables, operaciones aritméticas y un bucle `while`.
+- **`neuron.lang`**: implementa el entrenamiento de una neurona simple mediante descenso por gradiente para aprender la función lineal `y = 2x`.
+- **`or.lang`**: imprime la tabla de verdad del operador lógico `||`.
+- **`pi.lang`**: aproxima el valor de π utilizando la serie de Leibniz.
+
+A continuación se muestra el contenido de cada uno de estos programas.
+
+### fibonacci.lang
+```lang
+int i = 0;
+int n = 10;
+
+int a = 0;
+int b = 1;
+int c = a + b;
+
+while (i < n) {
+	print(a + " + " + b + " = " + c);
+	a = b;
+	b = c;
+	c = a + b;
+	i = i + 1;
+}
+```
+
+### neuron.lang
+```lang
+float x1 = 0.0;
+float x2 = 1.0;
+float x3 = 2.0;
+float x4 = 3.0;
+
+float expected_y1 = 0.0;
+float expected_y2 = 2.0;
+float expected_y3 = 4.0;
+float expected_y4 = 6.0;
+
+float w = 3.2;
+float b = 0.3;
+
+int step = 0;
+int steps = 1000;
+
+float y;
+float cost;
+float learning_rate = 0.01;
+float dL_dz;
+float dz_dy = 1.0;
+float dy_dw;
+float dy_db = 1.0;
+
+print("entrenando neurona...");
+while (step < steps) {
+	y = w*x1 + b;
+	cost = (y - expected_y1) * (y - expected_y1);
+	dL_dz = 2 * (y - expected_y1);
+	dy_dw = x1;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x2 + b;
+	cost = (y - expected_y2) * (y - expected_y2);
+	dL_dz = 2 * (y - expected_y2);
+	dy_dw = x2;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x3 + b;
+	cost = (y - expected_y3) * (y - expected_y3);
+	dL_dz = 2 * (y - expected_y3);
+	dy_dw = x3;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	y = w*x4 + b;
+	cost = (y - expected_y4) * (y - expected_y4);
+	dL_dz = 2 * (y - expected_y4);
+	dy_dw = x4;
+	w = w - (dL_dz * dz_dy * dy_dw) * learning_rate;
+	b = b - (dL_dz * dz_dy * dy_db) * learning_rate;
+	
+	step = step + 1;
+}
+
+print("predicciones de la neurona para la tabla del 2:");
+int i = 0;
+while (i <= 10) {
+	print(i + " * 2 = " + (w*i + b));
+	i = i + 1;
+}
+```
+
+### or.lang
+```lang
+bool false_and_false = false || false;
+bool false_and_true = false || true;
+bool true_and_false = true || false;
+bool true_and_true = true || true;
+
+print("false || false = " + false_and_false);
+print("false || true = " + false_and_true);
+print("true || false = " + true_and_false);
+print("true || true = " + true_and_true);
+```
+
+### pi.lang
+```lang
+float pi = 0.0;
+int i = 0;
+int signo = 1;
+
+while (i < 100000) {
+    pi = pi + signo * (4.0 / (2 * i + 1));
+    signo = signo * (1 - 2);
+    i = i + 1;
+}
+
+print("pi aproximado: " + pi);
+```
 
 ---
 
